@@ -1,5 +1,6 @@
 Code.Cake
 =========
+[![Build status](https://ci.appveyor.com/api/projects/status/tn26tahaaydome3i?svg=true)](https://ci.appveyor.com/project/Signature-OpenSource/codecake)![Nuget](https://img.shields.io/nuget/v/Code.Cake?logo=nuget)
 
 Code-based approach to the [Cake (C# Make)](https://cakebuild.net/) build system. Provides a C# build host to use [Cake methods](https://cakebuild.net/api/), utilities and addins in a .NET application.
 
