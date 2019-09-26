@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <Import Project="..\Common\Shared.props" />
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.0;net461</TargetFrameworks>
+    <TargetFrameworks>netstandard2.0</TargetFrameworks>
     <Description>CodeCake offers code based support to Cake (see http://cakebuild.net/ site).</Description>
     <PackageTags>CodeCake Cake Script Build CakeBuild</PackageTags>
   </PropertyGroup>
