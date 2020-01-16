@@ -3,8 +3,8 @@
     <Branch Name="master" CIVersionMode="None" />
     <Branch Name="develop" VersionName="develop" CIVersionMode="LastReleaseBased" />
 
+    <Branch Name="develop-NetCore2" VersionName="develop" CIVersionMode="LastReleaseBased" />
   </Branches>
-  <StartingVersionForCSemVer>v0.6.0-rc</StartingVersionForCSemVer>
   <!-- <Debug IgnoreDirtyWorkingFolder="true"/> -->
-
+  <SingleMajor>2</SingleMajor>
 </RepositoryInfo>
