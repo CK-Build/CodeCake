@@ -15,7 +15,6 @@ namespace CodeCake
     /// </summary>
     public sealed class CodeCakeExecutionStrategy : IExecutionStrategy
     {
-        private readonly ICakeLog _log;
         private readonly IExecutionStrategy _default;
         private readonly string _exclusiveTaskName;
 
@@ -27,7 +26,6 @@ namespace CodeCake
         public CodeCakeExecutionStrategy( ICakeLog log, string exclusiveTaskName = null )
         {
             _exclusiveTaskName = exclusiveTaskName;
-            _log = log;
             _default = new DefaultExecutionStrategy( log );
         }
 
@@ -84,19 +82,16 @@ namespace CodeCake
         /// </summary>
         /// <param name="action">The action.</param>
         /// <param name="exception">The exception.</param>
-        public void ReportErrors( Action<Exception> action, Exception exception )
+        public Task ReportErrorsAsync( Func<Exception, Task> action, Exception exception )
         {
-            _default.ReportErrors( action, exception );
+            return _default.ReportErrorsAsync( action, exception );
         }
 
         /// <summary>
         /// Invokes the finally handler.
         /// </summary>
         /// <param name="action">The action.</param>
-        public void InvokeFinally( Action action )
-        {
-            _default.InvokeFinally( action );
-        }
+        public Task InvokeFinallyAsync( Func<Task> action ) => _default.InvokeFinallyAsync( action );
 
         /// <summary>
         /// Performs the specified setup action before each task is invoked.
@@ -124,9 +119,9 @@ namespace CodeCake
         /// <param name="action">The action.</param>
         /// <param name="exception">The exception.</param>
         /// <param name="context">The context.</param>
-        public void HandleErrors( Action<Exception, ICakeContext> action, Exception exception, ICakeContext context )
+        public Task HandleErrorsAsync( Func<Exception, ICakeContext, Task> action, Exception exception, ICakeContext context )
         {
-            _default.HandleErrors( action, exception, context );
+            return _default.HandleErrorsAsync( action, exception, context );
         }
     }
 }
