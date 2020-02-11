@@ -24,7 +24,7 @@ namespace CodeCake
     {
         readonly ICakeContext _ctx;
         readonly SimpleRepositoryInfo _gitInfo;
-        readonly HashSet<ISolution> _solutions = new HashSet<ISolution>();
+        readonly HashSet<ICIWorkflow> _solutions = new HashSet<ICIWorkflow>();
         List<ArtifactPush> _artifactPushes;
         bool _ignoreNoArtifactsToProduce;
 
@@ -43,7 +43,7 @@ namespace CodeCake
             Directory.CreateDirectory( ReleasesFolder );
         }
 
-        public void RegisterSolution( ISolution solution )
+        public void RegisterSolution( ICIWorkflow solution )
         {
             _solutions.Add( solution );
         }
@@ -58,10 +58,10 @@ namespace CodeCake
         /// </summary>
         public SimpleRepositoryInfo GitInfo => _gitInfo;
 
-        IEnumerable<ISolutionProducingArtifact> SolutionProducingArtifacts => Solutions.OfType<ISolutionProducingArtifact>();
+        IEnumerable<ICIPublishWorkflow> SolutionProducingArtifacts => Solutions.OfType<ICIPublishWorkflow>();
 
         /// <summary>
-        /// Gets the set of <see cref="ArtifactType"/> of the <see cref="ISolutionProducingArtifact"/> that have been registered.
+        /// Gets the set of <see cref="ArtifactType"/> of the <see cref="ICIPublishWorkflow"/> that have been registered.
         /// </summary>
         public IEnumerable<ArtifactType> ArtifactTypes => SolutionProducingArtifacts.Select( p => p.ArtifactType );
 
@@ -162,7 +162,7 @@ namespace CodeCake
         /// </summary>
         public bool ShouldStop => NoArtifactsToProduce && !IgnoreNoArtifactsToProduce;
 
-        public IReadOnlyCollection<ISolution> Solutions => _solutions;
+        public IReadOnlyCollection<ICIWorkflow> Solutions => _solutions;
 
         #region Memory key support.
 
@@ -215,52 +215,45 @@ namespace CodeCake
         {
             string AddSkipped( string s ) => ShouldStop ? s + " (Skipped)" : s;
 
-            void AzurePipelineUpdateBuildVersion( SimpleRepositoryInfo gitInfo )
+            string ComputeAzurePipelineUpdateBuildVersion( SimpleRepositoryInfo gitInfo )
             {
                 // Azure (formerly VSTS, formerly VSO) analyzes the stdout to set its build number.
                 // On clash, the default Azure/VSTS/VSO build number is used: to ensure that the actual
                 // version will be always be available we need to inject a uniquifier.
                 string buildVersion = AddSkipped( $"{gitInfo.SafeVersion}_{DateTime.UtcNow:yyyyMMdd-HHmmss}" );
                 Cake.Information( $"Using VSTS build number: {buildVersion}" );
-                string buildInstruction = $"##vso[build.updatebuildnumber]{buildVersion}";
+                return $"##vso[build.updatebuildnumber]{buildVersion}";
+            }
+
+            void AzurePipelineUpdateBuildVersion( string buildInstruction )
+            {
                 Console.WriteLine();
                 Console.WriteLine( buildInstruction );
                 Console.WriteLine();
             }
 
-            void AppVeyorUpdateBuildVersion( IAppVeyorProvider appVeyor, SimpleRepositoryInfo gitInfo )
+            IAppVeyorProvider appVeyor = Cake.AppVeyor();
+            ITFBuildProvider vsts = Cake.TFBuild();
+            try
             {
-                try
+                string azureVersion = ComputeAzurePipelineUpdateBuildVersion( _gitInfo );
+                string appveyorVersion = AddSkipped( _gitInfo.SafeVersion );
+                if( appVeyor.IsRunningOnAppVeyor ) //Warning: 
                 {
-                    appVeyor.UpdateBuildVersion( AddSkipped( gitInfo.SafeVersion ) );
+                    appVeyor.UpdateBuildVersion( appveyorVersion );
                 }
-                catch
+
+                if( vsts.IsRunningOnAzurePipelinesHosted || vsts.IsRunningOnAzurePipelines )
                 {
-                    appVeyor.UpdateBuildVersion( AddSkipped( $"{gitInfo.SafeVersion} ({appVeyor.Environment.Build.Number})" ) );
+                    AzurePipelineUpdateBuildVersion( azureVersion );
                 }
+            }
+            catch( Exception e )
+            {
+                Cake.Warning( "Could not set the Build Version !!!" );
+                Cake.Warning( e );
             }
 
-            var gitlab = Cake.GitLabCI();
-            if( gitlab.IsRunningOnGitLabCI )
-            {
-                // damned, we can't tag the pipeline/job.
-            }
-            else
-            {
-                IAppVeyorProvider appVeyor = Cake.AppVeyor();
-                if( appVeyor.IsRunningOnAppVeyor )
-                {
-                    AppVeyorUpdateBuildVersion( appVeyor, _gitInfo );
-                }
-                else
-                {
-                    ITFBuildProvider vsts = Cake.TFBuild();
-                    if( vsts.IsRunningOnAzurePipelinesHosted || vsts.IsRunningOnAzurePipelines )
-                    {
-                        AzurePipelineUpdateBuildVersion( _gitInfo );
-                    }
-                }
-            }
             return this;
         }
 

@@ -233,4 +233,4 @@ Assets in this repository are licensed with the MIT License. For more informatio
 This repository and its components use the following open-source projects:
 
 - [cake-build/cake](https://github.com/cake-build/cake), licensed under the [MIT License](https://github.com/cake-build/cake/blob/develop/LICENSE)
-- [SimpleGitVersion/SGV-Net](https://github.com/SimpleGitVersion/SGV-Net), licensed under the [MIT License](https://github.com/SimpleGitVersion/SGV-Net/blob/master/LICENSE.txt)
+- [ck-build/SGV-Net](https://github.com/CK-Build/SGV-Net), licensed under the [MIT License](https://github.com/CK-Build/SGV-Net/blob/master/LICENSE.txt)
