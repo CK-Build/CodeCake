@@ -120,6 +120,8 @@ namespace CodeCake
             ICakeRuntime runtime = new CakeRuntime();
             IFileSystem fileSystem = new FileSystem();
             MutableCakeEnvironment environment = new MutableCakeEnvironment( platform, runtime, appRoot );
+            console.SupportAnsiEscapeCodes = AnsiDetector.SupportsAnsi( environment );
+
             IGlobber globber = new Globber( fileSystem, environment );
             environment.Initialize( globber );
 
@@ -131,7 +133,7 @@ namespace CodeCake
             CakeConfigurationProvider configProvider = new CakeConfigurationProvider( fileSystem, environment );
             ICakeConfiguration configuration = configProvider.CreateConfiguration( environment.ApplicationRoot, options.Arguments );
             IToolRepository toolRepo = new ToolRepository( environment );
-            IToolResolutionStrategy toolStrategy = new ToolResolutionStrategy( fileSystem, environment, globber, configuration );
+            IToolResolutionStrategy toolStrategy = new ToolResolutionStrategy( fileSystem, environment, globber, configuration, logger );
             IToolLocator locator = new ToolLocator( environment, toolRepo, toolStrategy );
             IToolLocator toolLocator = new ToolLocator( environment, toolRepo, toolStrategy );
             IProcessRunner processRunner = new ProcessRunner( fileSystem, environment, logger, toolLocator, configuration );

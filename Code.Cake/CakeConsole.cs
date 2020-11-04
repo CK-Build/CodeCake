@@ -26,6 +26,11 @@ namespace CodeCake
         }
 
         /// <summary>
+        /// 
+        /// </summary>
+        public bool SupportAnsiEscapeCodes { get; internal set; }
+
+        /// <summary>
         /// Writes the text representation of the specified array of objects to the
         /// console output using the specified format information.
         /// </summary>
