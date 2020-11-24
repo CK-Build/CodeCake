@@ -198,3 +198,4 @@ Builder/Tools/
 *GhostDoc.xml
 
 CodeCakeBuilder/UnitTestsDone.*.txt
+$StObjGen/
