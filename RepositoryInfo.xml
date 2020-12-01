@@ -1,8 +1,5 @@
 ﻿<RepositoryInfo>
 
-  <StartingVersionForCSemVer>v0.6.0-rc</StartingVersionForCSemVer>
-  <!-- <Debug IgnoreDirtyWorkingFolder="true"/> -->
-
   <SimpleGitVersion StartingVersion="v0.6.0-rc">
     <Branches>
       <Branch Name="master" CIVersionMode="None" />
