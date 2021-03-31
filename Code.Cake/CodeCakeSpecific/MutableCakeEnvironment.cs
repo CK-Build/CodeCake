@@ -137,7 +137,7 @@ namespace CodeCake
         }
 
         /// <summary>
-        /// Gets a list of paths in PATH environement variable. 
+        /// Gets a list of paths in PATH environment variable. 
         /// When getting the PATH variable with <see cref="GetEnvironmentVariable"/>, the <see cref="FinalEnvironmentPaths"/> is returned as a joined string.
         /// </summary>
         public IReadOnlyList<string> EnvironmentPaths
