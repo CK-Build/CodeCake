@@ -77,7 +77,7 @@ namespace CodeCake
                     Cake.DeleteFiles( "Tests/**/TestResult*.xml" );
                 } );
 
-            // Use N as the first answser: this test takes a looong time (why?)
+            // Use N as the first answer: this test takes a looong time (why?)
             // In -autointeraction mode, this will be skipped (unless explicitly asked from the command line).
             Task( "AutoTests" )
                .WithCriteria( () => Cake.InteractiveMode() == InteractiveMode.NoInteraction

@@ -126,9 +126,12 @@ namespace CodeCake
             environment.Initialize( globber );
 
             IRegistry windowsRegistry = new WindowsRegistry();
-            // Parse options.
+            // Parse options... This is obsolete.
+            // There is no more CakeOptions is recent versions of Cake.
             var argumentParser = new ArgumentParser( logger, fileSystem );
             CakeOptions options = argumentParser.Parse( args );
+
+
             Debug.Assert( options != null );
             CakeConfigurationProvider configProvider = new CakeConfigurationProvider( fileSystem, environment );
             ICakeConfiguration configuration = configProvider.CreateConfiguration( environment.ApplicationRoot, options.Arguments );
@@ -138,6 +141,15 @@ namespace CodeCake
             IToolLocator toolLocator = new ToolLocator( environment, toolRepo, toolStrategy );
             IProcessRunner processRunner = new ProcessRunner( fileSystem, environment, logger, toolLocator, configuration );
             logger.SetVerbosity( options.Verbosity );
+
+            // The arguments used to the Dictionary<string,string> from the () CakeOptions.
+            // Cake now relies on Spectre.Console.
+            // Arguments are now a ILookup<string,string> (this comes from the Spectre.Console/Cli).
+            // This "Cli" brings a whole parser/command model/executor...
+            // This code base is huge and a lot of aspects are internal. Not easy to extract just what we need.
+            // Why is there a "Cli" in the Spectre.Console project?
+            // What if we don't need it?
+            // Anyway, let's workaround here by still using the dictionary (there will always be ONE value per key).
             ICakeArguments arguments = new CakeArguments( options.Arguments );
             var context = new CakeContext(
                 fileSystem,
