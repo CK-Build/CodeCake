@@ -2,7 +2,6 @@ using Cake.Common;
 using Cake.Common.Build;
 using Cake.Common.Build.AppVeyor;
 using Cake.Common.Build.AzurePipelines;
-using Cake.Common.Build.TFBuild;
 using Cake.Common.Diagnostics;
 using Cake.Core;
 using CK.Text;
@@ -229,7 +228,7 @@ namespace CodeCake
                     appVeyor.UpdateBuildVersion( AddSkipped( BuildInfo.Version.ToString() ) );
                 }
 
-                if( azure.IsRunningOnAzurePipelinesHosted || azure.IsRunningOnAzurePipelines )
+                if( azure.IsRunningOnAzurePipelines )
                 {
                     string azureVersion = ComputeAzurePipelineUpdateBuildVersion( BuildInfo );
                     AzurePipelineUpdateBuildVersion( azureVersion );

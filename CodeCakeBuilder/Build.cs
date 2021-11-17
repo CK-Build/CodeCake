@@ -73,7 +73,7 @@ namespace CodeCake
                 .Does( () =>
                 {
                     globalInfo.GetDotnetSolution().Clean();
-                    Cake.CleanDirectories( globalInfo.ReleasesFolder );
+                    Cake.CleanDirectories( globalInfo.ReleasesFolder.ToString() );
                     Cake.DeleteFiles( "Tests/**/TestResult*.xml" );
                 } );
 
