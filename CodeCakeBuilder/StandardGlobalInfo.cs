@@ -186,7 +186,7 @@ namespace CodeCake
         /// Simply calls <see cref="ArtifactType.PushAsync(IEnumerable{ArtifactPush})"/> on each <see cref="ArtifactTypes"/>
         /// with their correct typed artifacts.
         /// </summary>
-        public Task PushArtifacts( IEnumerable<ArtifactPush> pushes = null )
+        public Task PushArtifactsAsync( IEnumerable<ArtifactPush> pushes = null )
         {
             if( pushes == null ) pushes = GetArtifactPushList();
             return Task.WhenAll( ArtifactTypes.Select( t => t.PushAsync( pushes.Where( a => a.Feed.ArtifactType == t ) ) ) );

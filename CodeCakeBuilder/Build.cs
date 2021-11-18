@@ -143,9 +143,9 @@ namespace CodeCake
             Task( "Push-NuGet-Packages" )
                 .IsDependentOn( "Create-NuGet-Packages" )
                 .WithCriteria( () => globalInfo.IsValid )
-               .Does( () =>
+               .Does( async () =>
                 {
-                    globalInfo.PushArtifacts();
+                    await globalInfo.PushArtifactsAsync();
                 } );
 
             Task( "Default" ).IsDependentOn( "Push-NuGet-Packages" );
