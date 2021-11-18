@@ -2,7 +2,6 @@ using Cake.Common.Diagnostics;
 using Cake.Common.IO;
 using Cake.Common.Solution;
 using Cake.Common.Tools.DotNet;
-using Cake.Common.Tools.DotNetCore;
 using Cake.Common.Tools.DotNetCore.Build;
 using Cake.Common.Tools.DotNetCore.Test;
 using Cake.Common.Tools.NUnit;
@@ -42,11 +41,10 @@ namespace CodeCake
         public readonly IReadOnlyList<SolutionProject> Projects;
         public readonly IReadOnlyList<SolutionProject> ProjectsToPublish;
 
-        DotnetSolution(
-            StandardGlobalInfo globalInfo,
-            string solutionFileName,
-            IReadOnlyList<SolutionProject> projects,
-            IReadOnlyList<SolutionProject> projectsToPublish )
+        DotnetSolution( StandardGlobalInfo globalInfo,
+                        string solutionFileName,
+                        IReadOnlyList<SolutionProject> projects,
+                        IReadOnlyList<SolutionProject> projectsToPublish )
         {
             _globalInfo = globalInfo;
             SolutionFileName = solutionFileName;
@@ -62,15 +60,15 @@ namespace CodeCake
         /// The predicate used to filter the project to publish. By default the predicate is p => !p.Path.Segments.Contains
         /// </param>
         /// <returns></returns>
-        public static DotnetSolution FromSolutionInCurrentWorkingDirectory(
-            StandardGlobalInfo globalInfo )
+        public static DotnetSolution FromSolutionInCurrentWorkingDirectory( StandardGlobalInfo globalInfo )
         {
             string solutionFileName = System.IO.Path.GetFileName(
                 globalInfo.Cake.GetFiles( "*.sln",
-                    new GlobberSettings
-                    {
-                        Predicate = p => !System.IO.Path.GetFileName( p.Path.FullPath ).EndsWith( ".local.sln", StringComparison.OrdinalIgnoreCase )
-                    } ).Single().FullPath
+                                          new GlobberSettings
+                                          {
+                                              Predicate = p => !System.IO.Path.GetFileName( p.Path.FullPath )
+                                                                              .EndsWith( ".local.sln", StringComparison.OrdinalIgnoreCase )
+                                          } ).Single().FullPath
             );
             var sln = globalInfo.Cake.ParseSolution( solutionFileName );
 
@@ -81,7 +79,7 @@ namespace CodeCake
                 .ToList();
             var projectsToPublish = projects.Where(
                     p => ((bool?)XDocument.Load( p.Path.FullPath )
-                        .Root
+                        .Root!
                         .Elements( "PropertyGroup" )
                         .Elements( "IsPackable" ).LastOrDefault() ?? true) == true
                 )
@@ -119,7 +117,7 @@ namespace CodeCake
             }
         }
 
-        public void Test( IEnumerable<SolutionProject> testProjects = null )
+        public void Test( IEnumerable<SolutionProject>? testProjects = null )
         {
             if( testProjects == null )
             {

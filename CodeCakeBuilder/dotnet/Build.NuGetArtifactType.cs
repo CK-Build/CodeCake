@@ -1,7 +1,7 @@
 using Cake.Common.Diagnostics;
 using Cake.Common.Solution;
 using Cake.Common.Tools.DotNet;
-using Cake.Common.Tools.DotNet.Pack;
+using Cake.Common.Tools.DotNetCore.Pack;
 using CodeCake.Abstractions;
 using CSemVer;
 using SimpleGitVersion;
@@ -14,7 +14,7 @@ namespace CodeCake
 
     public partial class DotnetSolution : ICIPublishWorkflow
     {
-        private ArtifactType _artifactType;
+        private ArtifactType? _artifactType;
 
         public ArtifactType ArtifactType
         {
@@ -28,7 +28,7 @@ namespace CodeCake
         public void Pack()
         {
             var nugetInfo = _globalInfo.ArtifactTypes.OfType<NuGetArtifactType>().Single();
-            var settings = new DotNetPackSettings().AddVersionArguments( _globalInfo.BuildInfo, c =>
+            var settings = new DotNetCorePackSettings().AddVersionArguments( _globalInfo.BuildInfo, c =>
             {
                 c.NoBuild = true;
                 c.IncludeSymbols = true;
@@ -42,6 +42,8 @@ namespace CodeCake
             }
         }
     }
+
+
 
 
     public partial class Build

@@ -15,9 +15,9 @@ namespace CodeCake.Abstractions
     {
         readonly StandardGlobalInfo _globalInfo;
         readonly string _typeName;
-        List<ArtifactFeed> _feeds;
-        List<ILocalArtifact> _artifacts;
-        List<ArtifactPush> _pushes;
+        List<ArtifactFeed>? _feeds;
+        List<ILocalArtifact>? _artifacts;
+        List<ArtifactPush>? _pushes;
 
         /// <summary>
         /// Initializes a new artifact type and adds it into
