@@ -1,7 +1,7 @@
 using Cake.Common.Diagnostics;
 using Cake.Common.Solution;
-using Cake.Common.Tools.DotNetCore;
-using Cake.Common.Tools.DotNetCore.Pack;
+using Cake.Common.Tools.DotNet;
+using Cake.Common.Tools.DotNet.Pack;
 using CodeCake.Abstractions;
 using CSemVer;
 using SimpleGitVersion;
@@ -28,7 +28,7 @@ namespace CodeCake
         public void Pack()
         {
             var nugetInfo = _globalInfo.ArtifactTypes.OfType<NuGetArtifactType>().Single();
-            var settings = new DotNetCorePackSettings().AddVersionArguments( _globalInfo.BuildInfo, c =>
+            var settings = new DotNetPackSettings().AddVersionArguments( _globalInfo.BuildInfo, c =>
             {
                 c.NoBuild = true;
                 c.IncludeSymbols = true;
@@ -38,12 +38,10 @@ namespace CodeCake
             foreach( var p in nugetInfo.GetNuGetArtifacts() )
             {
                 _globalInfo.Cake.Information( p.ArtifactInstance );
-                _globalInfo.Cake.DotNetCorePack( p.Project.Path.FullPath, settings );
+                _globalInfo.Cake.DotNetPack( p.Project.Path.FullPath, settings );
             }
         }
     }
-
-
 
 
     public partial class Build

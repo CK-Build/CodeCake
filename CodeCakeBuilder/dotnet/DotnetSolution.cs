@@ -1,6 +1,7 @@
 using Cake.Common.Diagnostics;
 using Cake.Common.IO;
 using Cake.Common.Solution;
+using Cake.Common.Tools.DotNet;
 using Cake.Common.Tools.DotNetCore;
 using Cake.Common.Tools.DotNetCore.Build;
 using Cake.Common.Tools.DotNetCore.Test;
@@ -110,7 +111,7 @@ namespace CodeCake
             {
                 var exclude = new List<string>( excludedProjectsName ) { "CodeCakeBuilder" };
                 tempSln.ExcludeProjectsFromBuild( exclude.ToArray() );
-                _globalInfo.Cake.DotNetCoreBuild( tempSln.FullPath.FullPath,
+                _globalInfo.Cake.DotNetBuild( tempSln.FullPath.FullPath,
                     new DotNetCoreBuildSettings().AddVersionArguments( _globalInfo.BuildInfo, s =>
                     {
                         s.Configuration = _globalInfo.BuildInfo.BuildConfiguration;
@@ -162,7 +163,7 @@ namespace CodeCake
                             _globalInfo.Cake.Information( $"Testing via NUnitLite ({framework}): {testBinariesPath}" );
                             if( !_globalInfo.CheckCommitMemoryKey( testBinariesPath ) )
                             {
-                                _globalInfo.Cake.DotNetCoreExecute( testBinariesPath );
+                                _globalInfo.Cake.DotNetExecute( testBinariesPath );
                             }
                         }
                     }
@@ -179,13 +180,13 @@ namespace CodeCake
                                 Framework = framework,
                                 NoRestore = true,
                                 NoBuild = true,
-                                Logger = "trx"
+                                Loggers = new List<string>() { "trx" }
                             };
                             if( _globalInfo.Cake.Environment.GetEnvironmentVariable( "DisableNodeReUse" ) != null )
                             {
                                 options.ArgumentCustomization = args => args.Append( "/nodeReuse:false" );
                             }
-                            _globalInfo.Cake.DotNetCoreTest( projectPath, options );
+                            _globalInfo.Cake.DotNetTest( projectPath, options );
                         }
                     }
 

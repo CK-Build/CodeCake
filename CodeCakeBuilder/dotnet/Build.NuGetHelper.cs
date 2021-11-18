@@ -361,22 +361,18 @@ namespace CodeCake
                     Cake.Information( $"Pushing packages to '{Name}' => '{Url}'." );
                     var logger = InitializeAndGetLogger( Cake );
                     var updater = await _updater;
-                    foreach( var p in pushes )
-                    {
-                        string packageString = p.Name + "." + p.Version.WithBuildMetaData( null ).ToNormalizedString();
-                        var fullPath = ArtifactType.GlobalInfo.ReleasesFolder.AppendPart( packageString + ".nupkg" );
-                        await updater.Push(
-                            fullPath,
-                            string.Empty, // no Symbol source.
-                            20, //20 seconds timeout
-                            disableBuffering: false,
-                            getApiKey: endpoint => apiKey,
-                            getSymbolApiKey: symbolsEndpoint => null,
-                            noServiceEndpoint: false,
-                            skipDuplicate: true,
-                            symbolPackageUpdateResource: null,
-                            log: logger );
-                    }
+                    await updater.Push(
+                        pushes.Select( p => p.Name + "." + p.Version.WithBuildMetaData( null ).ToNormalizedString() ).ToList(),
+                        string.Empty, // no Symbol source.
+                        20, //20 seconds timeout
+                        disableBuffering: false,
+                        getApiKey: endpoint => apiKey,
+                        getSymbolApiKey: symbolsEndpoint => null,
+                        noServiceEndpoint: false,
+                        skipDuplicate: true,
+                        symbolPackageUpdateResource: null,
+                        log: logger );
+
                     await OnAllArtifactsPushed( pushes );
                 }
 

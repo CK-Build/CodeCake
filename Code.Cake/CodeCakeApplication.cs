@@ -58,7 +58,7 @@ namespace CodeCake
                             .ToDictionary( t => t.Name, t => new CodeCakeBuildTypeDescriptor( t ) );
             if( solutionDirectory == null && executingAssembly != null )
             {
-                solutionDirectory = new Uri( Assembly.GetEntryAssembly().CodeBase ).LocalPath;
+                solutionDirectory = Assembly.GetEntryAssembly().Location;
                 while( System.IO.Path.GetFileName( solutionDirectory ) != "bin" )
                 {
                     solutionDirectory = System.IO.Path.GetDirectoryName( solutionDirectory );
@@ -109,7 +109,7 @@ namespace CodeCake
         /// <param name="args">Arguments.</param>
         /// <param name="appRoot">Application root folder</param>
         /// <returns>The result of the run.</returns>
-        public RunResult Run( IEnumerable<string> args, string appRoot = null )
+        public async Task<RunResult> RunAsync( IEnumerable<string> args, string appRoot = null )
         {
             var console = new CakeConsole();
             var logger = new SafeCakeLog( console );
@@ -174,7 +174,7 @@ namespace CodeCake
             {
                 SetEnvironmentVariablesFromCodeCakeBuilderKeyVault( logger, context );
 
-                // Instanciates the script object.
+                // Instantiates the script object.
                 CodeCakeHost._injectedActualHost = new BuildScriptHost( engine, context );
                 CodeCakeHost c = (CodeCakeHost)Activator.CreateInstance( choosenBuild.Type );
 
@@ -189,7 +189,7 @@ namespace CodeCake
                     logger.Warning( $"No task '{target}' defined. Since -exclusiveOptional is specified, nothing is done." );
                     return new RunResult( 0, context.InteractiveMode() );
                 }
-                var report = engine.RunTargetAsync( context, strategy, execSettings ).GetAwaiter().GetResult();
+                var report = await engine.RunTargetAsync( context, strategy, execSettings );
                 if( report != null && !report.IsEmpty )
                 {
                     var printerReport = new CakeReportPrinter( console );
