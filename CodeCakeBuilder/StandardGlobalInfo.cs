@@ -228,7 +228,7 @@ namespace CodeCake
                     appVeyor.UpdateBuildVersion( AddSkipped( BuildInfo.Version.ToString() ) );
                 }
 
-                if( azure.IsRunningOnAzurePipelines )
+                if( azure.IsRunningOnAzurePipelinesHosted || azure.IsRunningOnAzurePipelines )
                 {
                     string azureVersion = ComputeAzurePipelineUpdateBuildVersion( BuildInfo );
                     AzurePipelineUpdateBuildVersion( azureVersion );
