@@ -361,8 +361,11 @@ namespace CodeCake
                     Cake.Information( $"Pushing packages to '{Name}' => '{Url}'." );
                     var logger = InitializeAndGetLogger( Cake );
                     var updater = await _updater;
+                    var names = pushes.Select( p => p.Name + "." + p.Version.WithBuildMetaData( null ).ToNormalizedString() );
+                    var fullPaths = names.Select( n => ArtifactType.GlobalInfo.ReleasesFolder.AppendPart( n + ".nupkg" ).ToString() );
+
                     await updater.Push(
-                        pushes.Select( p => p.Name + "." + p.Version.WithBuildMetaData( null ).ToNormalizedString() ).ToList(),
+                        fullPaths.ToList(),
                         string.Empty, // no Symbol source.
                         20, //20 seconds timeout
                         disableBuffering: false,
