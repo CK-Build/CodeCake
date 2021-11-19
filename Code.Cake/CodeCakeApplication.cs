@@ -123,7 +123,6 @@ namespace CodeCake
             console.SupportAnsiEscapeCodes = AnsiDetector.SupportsAnsi( environment );
 
             IGlobber globber = new Globber( fileSystem, environment );
-            environment.Initialize( globber );
 
             IRegistry windowsRegistry = new WindowsRegistry();
             // Parse options.
@@ -161,14 +160,6 @@ namespace CodeCake
             // Set the working directory: the solution directory.
             logger.Information( $"Working in Solution directory: '{_solutionDirectory}'." );
             environment.WorkingDirectory = new DirectoryPath( _solutionDirectory );
-
-            // Adds additional paths from chosen build.
-            foreach( var p in choosenBuild.AdditionnalPatternPaths )
-            {
-                environment.AddPath( p );
-            }
-            logger.Information( "Path(s) added: " + string.Join( ", ", environment.EnvironmentAddedPaths ) );
-            logger.Information( "Dynamic pattern path(s) added: " + string.Join( ", ", environment.EnvironmentDynamicPaths ) );
 
             try
             {

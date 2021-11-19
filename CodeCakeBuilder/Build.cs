@@ -24,14 +24,6 @@ using Cake.Common.Tools.DotNetCore.Build;
 
 namespace CodeCake
 {
-    /// <summary>
-    /// CodeCakeBuilder for Code.Cake.
-    /// </summary>
-    [AddPath( "%UserProfile%/.nuget/packages/**/tools*" )]
-    // These dynamic paths are used to test the dynamic path feature itself.
-    // This is the default (starting with version v0.8.0).
-    [AddPath( "CodeCakeBuilder/**/TestDynamic?", isDynamicPath: true )]
-    [AddPath( "CodeCakeBuilder/AutoTests", isDynamicPath: true )]
     public partial class Build : CodeCakeHost
     {
         public Build()
@@ -77,56 +69,9 @@ namespace CodeCake
                     Cake.DeleteFiles( "Tests/**/TestResult*.xml" );
                 } );
 
-            // Use N as the first answser: this test takes a looong time (why?)
-            // In -autointeraction mode, this will be skipped (unless explicitly asked from the command line).
-            Task( "AutoTests" )
-               .WithCriteria( () => Cake.InteractiveMode() == InteractiveMode.NoInteraction
-                                    || Cake.ReadInteractiveOption( "RunAutoTests", "Run Auto Tests (for Dynamic paths)?", 'N', 'Y' ) == 'Y')
-               .Does( () =>
-               {
-                   void ShouldFindAutoTestFolderFromDynamicPaths( bool shouldFind )
-                   {
-                       string[] paths = Cake.Environment.GetEnvironmentVariable( "PATH" ).Split( new char[] { Cake.Environment.Platform.IsUnix() ? ':' : ';' }, StringSplitOptions.RemoveEmptyEntries );
-                       // Cake does not normalize the paths to System.IO.Path.DirectorySeparatorChar. We do it here.
-                       string af = Cake.Environment.WorkingDirectory.FullPath + "/CodeCakeBuilder/AutoTests".Replace( '\\', '/' );
-                       bool autoFolder = paths.Select( p => p.Replace( '\\', '/' ) ).Contains( af );
-                       if( autoFolder != shouldFind ) throw new Exception( shouldFind ? "AutoTests folder should be found." : "AutoTests folder should not be found." );
-                   }
-
-                   void ShouldFindTestTxtFileFromDynamicPaths( bool shouldFind )
-                   {
-                       string[] paths = Cake.Environment.GetEnvironmentVariable( "PATH" ).Split( new char[] { Cake.Environment.Platform.IsUnix() ? ':' : ';' }, StringSplitOptions.RemoveEmptyEntries );
-                       bool findTestTxtFileInPath = paths.Select( p => System.IO.Path.Combine( p, "Test.txt" ) ).Any( f => System.IO.File.Exists( f ) );
-                       if( findTestTxtFileInPath != shouldFind ) throw new Exception( shouldFind ? "Should find Text.txt file." : "Should not find Test.txt file." );
-                   }
-
-                   if( System.IO.Directory.Exists( "CodeCakeBuilder/AutoTests" ) )
-                   {
-                       Cake.DeleteDirectory( "CodeCakeBuilder/AutoTests", new DeleteDirectorySettings() { Recursive = true, Force = true } );
-                   }
-                   ShouldFindAutoTestFolderFromDynamicPaths( false );
-                   ShouldFindTestTxtFileFromDynamicPaths( false );
-                   Cake.CreateDirectory( "CodeCakeBuilder/AutoTests/TestDynamic0" );
-                   ShouldFindAutoTestFolderFromDynamicPaths( true );
-                   ShouldFindTestTxtFileFromDynamicPaths( false );
-                   System.IO.File.WriteAllText( "CodeCakeBuilder/AutoTests/TestDynamic0/Test.txt", "c" );
-                   ShouldFindAutoTestFolderFromDynamicPaths( true );
-                   ShouldFindTestTxtFileFromDynamicPaths( true );
-                   Cake.DeleteDirectory( "CodeCakeBuilder/AutoTests/TestDynamic0", new DeleteDirectorySettings() { Recursive = true, Force = true } );
-                   Cake.CreateDirectory( "CodeCakeBuilder/AutoTests/Sub/TestDynamicB" );
-                   ShouldFindAutoTestFolderFromDynamicPaths( true );
-                   ShouldFindTestTxtFileFromDynamicPaths( false );
-                   System.IO.File.WriteAllText( "CodeCakeBuilder/AutoTests/Sub/TestDynamicB/Test.txt", "c" );
-                   ShouldFindTestTxtFileFromDynamicPaths( true );
-                   Cake.DeleteDirectory( "CodeCakeBuilder/AutoTests", new DeleteDirectorySettings() { Recursive = true, Force = true } );
-                   ShouldFindTestTxtFileFromDynamicPaths( false );
-                   ShouldFindAutoTestFolderFromDynamicPaths( false );
-               } );
-
             Task( "Build" )
                 .IsDependentOn( "Clean" )
                 .IsDependentOn( "Check-Repository" )
-                .IsDependentOn( "AutoTests" )
                 .Does( () =>
                 {
                     globalInfo.GetDotnetSolution().Build();
