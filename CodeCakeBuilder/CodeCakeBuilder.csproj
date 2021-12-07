@@ -6,11 +6,13 @@
     <Nullable>annotations</Nullable>
   </PropertyGroup>
   <ItemGroup>
+    <PackageReference Include="CK.Core" Version="15.0.0-a01" />
+  </ItemGroup>
+  <ItemGroup>
     <PackageReference Include="NuGet.Credentials" Version="6.0.0" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Code.Cake\Code.Cake.csproj" />
-    <PackageReference Include="CK.Text" Version="9.0.2" />
     <PackageReference Include="SimpleGitVersion.Cake" Version="6.0.0-r" />
   </ItemGroup>
 </Project>
