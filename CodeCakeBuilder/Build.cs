@@ -17,22 +17,22 @@ namespace CodeCake
 
             Setup( context =>
             {
-                context.Information( "Executed BEFORE the first task." );
+                context.Log.Information( "Executed BEFORE the first task." );
             } );
 
             Teardown( context =>
             {
-                context.Information( "Executed AFTER the last task." );
+                context.Log.Information( "Executed AFTER the last task." );
             } );
 
             TaskSetup( setupContext =>
             {
-                setupContext.Information( $"TaskSetup for Task: {setupContext.Task.Name}" );
+                setupContext.Log.Information( $"TaskSetup for Task: {setupContext.Task.Name}" );
             } );
 
             TaskTeardown( teardownContext =>
             {
-                teardownContext.Information( $"TaskTeardown for Task: {teardownContext.Task.Name}" );
+                teardownContext.Log.Information( $"TaskTeardown for Task: {teardownContext.Task.Name}" );
             } );
 
             Task( "Check-Repository" )
