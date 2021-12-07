@@ -20,9 +20,6 @@ namespace CodeCake
         readonly ICakeRuntime _runtime;
         readonly DirectoryPath _applicationRoot;
         readonly List<string> _paths;
-        readonly List<string> _addedPaths;
-        readonly List<string> _dynamicPaths;
-        IGlobber _globber;
 
         /// <summary>
         /// Gets or sets the working directory.
@@ -60,13 +57,6 @@ namespace CodeCake
             {
                 _paths = new List<string>();
             }
-            _addedPaths = new List<string>();
-            _dynamicPaths = new List<string>();
-        }
-
-        internal void Initialize( IGlobber globber )
-        {
-            _globber = globber;
         }
 
         /// <summary>
@@ -132,67 +122,17 @@ namespace CodeCake
         /// </returns>
         public string GetEnvironmentVariable( string variable )
         {
-            if( StringComparer.OrdinalIgnoreCase.Equals( variable, "PATH" ) ) return string.Join( _platform.IsUnix() ? ":" : ";", FinalEnvironmentPaths );
             return Environment.GetEnvironmentVariable( variable );
         }
 
         /// <summary>
-        /// Gets a list of paths in PATH environement variable. 
+        /// Gets a list of paths in PATH environment variable. 
         /// When getting the PATH variable with <see cref="GetEnvironmentVariable"/>, the <see cref="FinalEnvironmentPaths"/> is returned as a joined string.
         /// </summary>
         public IReadOnlyList<string> EnvironmentPaths
         {
             get { return _paths; }
         }
-
-        /// <summary>
-        /// Gets a list of paths added via <see cref="AddPath(EnvironmentAddedPath)"/>. 
-        /// When getting the PATH variable with <see cref="GetEnvironmentVariable"/>, the <see cref="FinalEnvironmentPaths"/> is returned as a joined string.
-        /// </summary>
-        public IList<string> EnvironmentAddedPaths
-        {
-            get { return _addedPaths; }
-        }
-
-        /// <summary>
-        /// Gets a list of dynamic paths added via <see cref="AddPath"/>.
-        /// When getting the PATH variable with <see cref="GetEnvironmentVariable"/>, the <see cref="FinalEnvironmentPaths"/> is returned as a joined string.
-        /// </summary>
-        public IReadOnlyList<string> EnvironmentDynamicPaths
-        {
-            get { return _dynamicPaths; }
-        }
-
-        /// <summary>
-        /// Get the final environment paths: it is the <see cref="EnvironmentPaths"/>, the <see cref="EnvironmentAddedPaths"/> 
-        /// and the <see cref="ExistingPathsFromDynamicPaths"/>.
-        /// </summary>
-        public IEnumerable<string> FinalEnvironmentPaths => _paths.Concat(_addedPaths ).Concat( ExistingPathsFromDynamicPaths );
-
-        /// <summary>
-        /// Adds a path to <see cref="EnvironmentAddedPaths"/> or <see cref="EnvironmentDynamicPaths"/>.
-        /// </summary>
-        /// <param name="p">The path to add.</param>
-        public void AddPath( EnvironmentAddedPath p )
-        {
-            if( p.IsDynamicPattern )
-            {
-                if( !_dynamicPaths.Contains( p.Path ) ) _dynamicPaths.Add( p.Path );
-            }
-            else
-            {
-                string expansed = Environment.ExpandEnvironmentVariables( p.Path );
-                foreach( var final in _globber.GetDirectories( expansed ).Select( d => d.FullPath ) )
-                {
-                    if( !_addedPaths.Contains( final ) ) _addedPaths.Add( final );
-                }
-            }
-        }
-
-        /// <summary>
-        /// Gets the existing paths defined by <see cref="EnvironmentDynamicPaths"/>.
-        /// </summary>
-        public IEnumerable<string> ExistingPathsFromDynamicPaths => _dynamicPaths.SelectMany( p => _globber.GetDirectories( Environment.ExpandEnvironmentVariables( p ) ).Select( d => d.FullPath ) );
 
         /// <summary>
         /// Gets the platform Cake is running on.

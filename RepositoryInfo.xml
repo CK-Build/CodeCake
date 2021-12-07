@@ -1,6 +1,5 @@
 ﻿<RepositoryInfo>
-
-  <SimpleGitVersion StartingVersion="v0.6.0-rc">
+  <SimpleGitVersion StartingVersion="6.0.0-alpha">
     <Branches>
       <Branch Name="master" CIVersionMode="None" />
       <Branch Name="develop" CIVersionMode="LastReleaseBased" VersionName="develop" />
