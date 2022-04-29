@@ -1,4 +1,4 @@
-<Project>
+﻿<Project>
   <!--<BasicDefinitions>: provides simple and useful definitions.-->
   <PropertyGroup>
     <Features>strict</Features>
@@ -59,7 +59,7 @@
   <!--</GenerateDocumentation>-->
   <!--<SourceLink>: is enabled only for ContinuousIntegrationBuild build. -->
   <ItemGroup Condition=" '$(ContinuousIntegrationBuild)' == 'true' ">
-    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="All" />
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All" />
   </ItemGroup>
   <!--</SourceLink>-->
   <!--<SourceLinkDebuggingWorkaround>: See  https://github.com/dotnet/sdk/issues/1458#issuecomment-695119194 -->
