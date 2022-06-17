@@ -1,5 +1,4 @@
 <Project Sdk="Microsoft.NET.Sdk">
-  <Import Project="..\Common\Shared.props" />
   <PropertyGroup>
     <TargetFrameworks>net6.0</TargetFrameworks>
     <Description>CodeCake offers code based support to Cake (see http://cakebuild.net/ site).</Description>
