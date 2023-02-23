@@ -2,6 +2,7 @@ using Cake.Core;
 using Cake.Core.Diagnostics;
 using Cake.Core.Scripting;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace CodeCake
@@ -16,9 +17,8 @@ namespace CodeCake
         /// </summary>
         /// <param name="engine">The engine.</param>
         /// <param name="context">The context.</param>
-        public BuildScriptHost(
-            ICakeEngine engine,
-            ICakeContext context ) 
+        public BuildScriptHost( ICakeEngine engine,
+                                ICakeContext context ) 
             : base( engine, context )
         {
         }
@@ -28,10 +28,19 @@ namespace CodeCake
         /// </summary>
         /// <param name="target">The target to run.</param>
         /// <returns>The resulting report.</returns>
-
         public override Task<CakeReport> RunTargetAsync( string target )
         {
             throw new NotSupportedException();
+        }
+
+        /// <summary>
+        /// This can never be called.
+        /// </summary>
+        /// <param name="target">The target to run.</param>
+        /// <returns>The resulting report.</returns>
+        public override Task<CakeReport> RunTargetsAsync( IEnumerable<string> targets )
+        {
+            throw new NotImplementedException();
         }
     }
 }

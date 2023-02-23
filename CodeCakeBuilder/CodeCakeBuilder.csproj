@@ -2,17 +2,20 @@
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
     <OutputType>Exe</OutputType>
-    <IsPackable>False</IsPackable>
+    <IsPackable>false</IsPackable>
+    <SignAssembly>false</SignAssembly>
+    <GenerateDocumentationFile>false</GenerateDocumentationFile>
+    <ManagePackageVersionsCentrally>false</ManagePackageVersionsCentrally>
     <Nullable>annotations</Nullable>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="CK.Core" Version="15.0.0-r06" />
+    <PackageReference Include="CK.Core" Version="16.1.1" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="NuGet.Credentials" Version="6.1.0" />
+    <PackageReference Include="NuGet.Credentials" Version="6.5.0" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Code.Cake\Code.Cake.csproj" />
-    <PackageReference Include="SimpleGitVersion.Cake" Version="7.0.0" />
+    <PackageReference Include="SimpleGitVersion.Cake" Version="7.2.0" />
   </ItemGroup>
 </Project>
