@@ -138,17 +138,16 @@ namespace CodeCake
             IProcessRunner processRunner = new ProcessRunner( fileSystem, environment, logger, toolLocator, configuration );
             logger.SetVerbosity( options.Verbosity );
             ICakeArguments arguments = new CakeArguments( options.Arguments );
-            var context = new CakeContext(
-                fileSystem,
-                environment,
-                globber,
-                logger,
-                arguments,
-                processRunner,
-                windowsRegistry,
-                locator,
-                dataService,
-                configuration );
+            var context = new CakeContext( fileSystem,
+                                           environment,
+                                           globber,
+                                           logger,
+                                           arguments,
+                                           processRunner,
+                                           windowsRegistry,
+                                           locator,
+                                           dataService,
+                                           configuration );
 
             CodeCakeBuildTypeDescriptor choosenBuild;
             if( !AvailableBuilds.TryGetValue( options.Script, out choosenBuild ) )
@@ -170,11 +169,12 @@ namespace CodeCake
                 CodeCakeHost c = (CodeCakeHost)Activator.CreateInstance( choosenBuild.Type );
 
 
+                var printerReport = new CakeReportPrinter( console, context );
                 var target = context.Arguments.GetArgument( "target" ) ?? "Default";
                 var execSettings = new ExecutionSettings().SetTarget( target );
                 var exclusiveTargetOptional = context.Arguments.HasArgument( "exclusiveOptional" );
                 var exclusiveTarget = exclusiveTargetOptional | context.Arguments.HasArgument( "exclusive" );
-                var strategy = new CodeCakeExecutionStrategy( logger, exclusiveTarget ? target : null );
+                var strategy = new CodeCakeExecutionStrategy( logger, printerReport, exclusiveTarget ? target : null );
                 if( exclusiveTargetOptional && !engine.Tasks.Any( t => t.Name == target ) )
                 {
                     logger.Warning( $"No task '{target}' defined. Since -exclusiveOptional is specified, nothing is done." );
@@ -183,7 +183,6 @@ namespace CodeCake
                 var report = await engine.RunTargetAsync( context, strategy, execSettings );
                 if( report != null && !report.IsEmpty )
                 {
-                    var printerReport = new CakeReportPrinter( console );
                     printerReport.Write( report );
                 }
             }

@@ -22,11 +22,12 @@ namespace CodeCake
         /// Initializes a new instance of the <see cref="DefaultExecutionStrategy"/> class.
         /// </summary>
         /// <param name="log">The log.</param>
+        /// <param name="reportPrinter">The report printer.</param>
         /// <param name="exclusiveTaskName">The optional exclusive task name to execute.</param>
-        public CodeCakeExecutionStrategy( ICakeLog log, string exclusiveTaskName = null )
+        public CodeCakeExecutionStrategy( ICakeLog log, ICakeReportPrinter reportPrinter, string exclusiveTaskName = null )
         {
             _exclusiveTaskName = exclusiveTaskName;
-            _default = new DefaultExecutionStrategy( log );
+            _default = new DefaultExecutionStrategy( log, reportPrinter );
         }
 
         /// <summary>
@@ -91,7 +92,11 @@ namespace CodeCake
         /// Invokes the finally handler.
         /// </summary>
         /// <param name="action">The action.</param>
-        public Task InvokeFinallyAsync( Func<Task> action ) => _default.InvokeFinallyAsync( action );
+        /// <param name="context">The context.</param>
+        public Task InvokeFinallyAsync( Func<ICakeContext, Task> action, ICakeContext context )
+        {
+            return _default.InvokeFinallyAsync( action, context );
+        }
 
         /// <summary>
         /// Performs the specified setup action before each task is invoked.
@@ -123,5 +128,6 @@ namespace CodeCake
         {
             return _default.HandleErrorsAsync( action, exception, context );
         }
+
     }
 }

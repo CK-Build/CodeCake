@@ -5,6 +5,6 @@
     <PackageTags>CodeCake Cake Script Build CakeBuild</PackageTags>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Cake.Common" Version="2.2.0" />
+    <PackageReference Include="Cake.Common" Version="3.0.0" />
   </ItemGroup>
 </Project>
