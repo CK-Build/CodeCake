@@ -74,7 +74,7 @@ namespace CodeCake
 
             var projects = sln
                 .Projects
-                .Where( p => !(p is SolutionFolder)
+                .Where( p => p is not SolutionFolder
                             && p.Name != "CodeCakeBuilder" )
                 .ToList();
             var projectsToPublish = projects.Where(
@@ -117,12 +117,33 @@ namespace CodeCake
             }
         }
 
+        /// <summary>
+        /// Simply 'dotnet test --no-restore --no-build' the solution.
+        /// </summary>
+        public void SolutionTest()
+        {
+            var memKey = $"Test:{SolutionFileName}";
+            if( !_globalInfo.CheckCommitMemoryKey( memKey ) )
+            {
+                var options = new DotNetTestSettings()
+                {
+                    NoRestore = true,
+                    NoBuild = true,
+                    Loggers = ["trx"]
+                };
+                if( _globalInfo.Cake.Environment.GetEnvironmentVariable( "DisableNodeReUse" ) != null )
+                {
+                    options.MSBuildSettings.NodeReuse = false;
+                }
+                _globalInfo.Cake.DotNetTest( null, options );
+            }
+            _globalInfo.WriteCommitMemoryKey( memKey );
+        }
+
+        [Obsolete( "Use the simpler SolutionTest() that simply 'dotnet test --no-restore --no-build' the solution." )]
         public void Test( IEnumerable<SolutionProject>? testProjects = null )
         {
-            if( testProjects == null )
-            {
-                testProjects = Projects.Where( p => p.Name.EndsWith( ".Tests" ) );
-            }
+            testProjects ??= Projects.Where( p => p.Name.EndsWith( ".Tests" ) );
 
             foreach( SolutionProject project in testProjects )
             {
@@ -138,7 +159,7 @@ namespace CodeCake
                 )
                 {
                     string framework = buildDir.LastPart;
-                    bool isNetFramework = framework.StartsWith( "net" ) && framework.Length == 6 && int.TryParse( framework.Substring( 3 ), out var _ );
+                    bool isNetFramework = framework.StartsWith( "net" ) && framework.Length == 6 && int.TryParse( framework.AsSpan( 3 ), out var _ );
                     string fileWithoutExtension = buildDir.AppendPart( project.Name );
                     string testBinariesPath = "";
                     if( isNunitLite )
@@ -178,7 +199,7 @@ namespace CodeCake
                                 Framework = framework,
                                 NoRestore = true,
                                 NoBuild = true,
-                                Loggers = new List<string>() { "trx" }
+                                Loggers = ["trx"]
                             };
                             if( _globalInfo.Cake.Environment.GetEnvironmentVariable( "DisableNodeReUse" ) != null )
                             {
