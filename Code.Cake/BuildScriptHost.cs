@@ -36,7 +36,7 @@ namespace CodeCake
         /// <summary>
         /// This can never be called.
         /// </summary>
-        /// <param name="target">The target to run.</param>
+        /// <param name="targets">The targets to run.</param>
         /// <returns>The resulting report.</returns>
         public override Task<CakeReport> RunTargetsAsync( IEnumerable<string> targets )
         {
