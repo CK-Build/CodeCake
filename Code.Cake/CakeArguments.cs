@@ -5,7 +5,7 @@ using Cake.Core;
 
 namespace CodeCake
 {
-    public sealed class CakeArguments : ICakeArguments
+    sealed class CakeArguments : ICakeArguments
     {
         private readonly Dictionary<string, List<string>> _arguments;
 
