@@ -1,6 +1,8 @@
 Code.Cake
 =========
-[![Build status](https://ci.appveyor.com/api/projects/status/tn26tahaaydome3i?svg=true)](https://ci.appveyor.com/project/Signature-OpenSource/codecake)![Nuget](https://img.shields.io/nuget/v/Code.Cake?logo=nuget)
+[![Build status](https://ci.appveyor.com/api/projects/status/7q0jb4iqdib6ji63?svg=true)](https://ci.appveyor.com/project/Signature-OpenSource/codecake)
+
+![Nuget](https://img.shields.io/nuget/v/Code.Cake?logo=nuget)
 
 Code-based approach to the [Cake (C# Make)](https://cakebuild.net/) build system. Provides a C# build host to use [Cake methods](https://cakebuild.net/api/), utilities and addins in a .NET application.
 
@@ -211,13 +213,6 @@ exist, nothing is done and a warning is emitted:
 | ---------------- | ------ |
 | **NuGet stable** | [![NuGet](https://img.shields.io/nuget/v/Code.Cake.svg)](https://www.nuget.org/packages/Code.Cake) |
 | NuGet prerelease | [![NuGet Pre Release](https://img.shields.io/nuget/vpre/Code.Cake.svg)](https://www.nuget.org/packages/Code.Cake) |
-
-## Build status
-
-| Branch   | Visual Studio 2017 |
-| -------- | ------- |
-| latest | [![AppVeyor](https://img.shields.io/appveyor/ci/olivier-spinelli/codecake.svg)](https://ci.appveyor.com/project/olivier-spinelli/codecake) |
-| `master` | [![AppVeyor](https://img.shields.io/appveyor/ci/olivier-spinelli/codecake/master.svg)](https://ci.appveyor.com/project/olivier-spinelli/codecake) |
 
 ## Contributing
 
